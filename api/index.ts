@@ -1,7 +1,7 @@
 import express from "express";
 import { initializeApp, getApps } from "firebase/app";
 import {
-  getFirestore,
+  initializeFirestore,
   collection,
   getDocs,
   setDoc,
@@ -88,9 +88,14 @@ const firebaseConfig = {
 const firebaseApp =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-const db = process.env.FIREBASE_DATABASE_ID
-  ? getFirestore(firebaseApp, process.env.FIREBASE_DATABASE_ID)
-  : getFirestore(firebaseApp);
+// Use experimentalForceLongPolling so Firestore uses HTTP/REST instead of
+// gRPC, which avoids gRPC metadata issues and connection timeouts in Vercel
+// serverless functions.
+const db = initializeFirestore(
+  firebaseApp,
+  { experimentalForceLongPolling: true },
+  process.env.FIREBASE_DATABASE_ID || undefined
+);
 
 // Helpers
 
