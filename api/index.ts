@@ -12,7 +12,64 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
-import { TIME_SLOTS, DEFAULT_CLASSES, Reservation, NotificationLog } from "../src/types";
+
+// Inline types and data to avoid relative import issues in Vercel serverless
+interface Reservation {
+  id: string;
+  teacherName: string;
+  grade: string;
+  section: string;
+  date: string;
+  startSlot: number;
+  endSlot: number;
+  email?: string;
+  phone?: string;
+  createdAt: string;
+}
+
+interface NotificationLog {
+  id: string;
+  teacherName: string;
+  grade: string;
+  section: string;
+  date: string;
+  timeRange: string;
+  emailOrPhone: string;
+  timestamp: string;
+  type: "email" | "sms" | "system";
+}
+
+const TIME_SLOTS = [
+  { name: "7:20 – 8:05",   start: "07:20", end: "08:05" },
+  { name: "8:05 – 8:50",   start: "08:05", end: "08:50" },
+  { name: "8:50 – 9:35",   start: "08:50", end: "09:35" },
+  { name: "9:35 – 10:20",  start: "09:35", end: "10:20" },
+  { name: "10:20 – 10:50", start: "10:20", end: "10:50" },
+  { name: "10:50 – 11:35", start: "10:50", end: "11:35" },
+  { name: "11:35 – 12:20", start: "11:35", end: "12:20" },
+  { name: "12:20 – 1:05",  start: "12:20", end: "13:05" },
+  { name: "1:05 – 1:50",   start: "13:05", end: "13:50" },
+  { name: "1:50 – 2:05",   start: "13:50", end: "14:05" },
+];
+
+const DEFAULT_CLASSES: Record<string, { gradeClass: string }> = {
+  "0-0": { gradeClass: "5º A" },  "0-1": { gradeClass: "5º A" },
+  "0-2": { gradeClass: "5º B" },  "0-3": { gradeClass: "5º B" },
+  "0-7": { gradeClass: "4º A" },  "0-8": { gradeClass: "4º A" },
+  "1-0": { gradeClass: "6º A" },  "1-1": { gradeClass: "6º A" },
+  "1-2": { gradeClass: "6º B" },  "1-3": { gradeClass: "6º B" },
+  "1-8": { gradeClass: "3ER AÑO A" }, "1-9": { gradeClass: "3ER AÑO A" },
+  "2-6": { gradeClass: "1ER AÑO B" }, "2-7": { gradeClass: "1ER AÑO B" },
+  "2-8": { gradeClass: "5TO AÑO" },   "2-9": { gradeClass: "5TO AÑO" },
+  "3-0": { gradeClass: "2DO AÑO B" }, "3-1": { gradeClass: "2DO AÑO B" },
+  "3-2": { gradeClass: "1ER AÑO A" }, "3-3": { gradeClass: "1ER AÑO A" },
+  "3-6": { gradeClass: "2DO AÑO A" }, "3-7": { gradeClass: "2DO AÑO A" },
+  "3-8": { gradeClass: "3ER AÑO B" }, "3-9": { gradeClass: "3ER AÑO B" },
+  "4-0": { gradeClass: "4º B" },  "4-1": { gradeClass: "4º B" },
+  "4-2": { gradeClass: "3º A" },  "4-3": { gradeClass: "3º A" },
+  "4-5": { gradeClass: "3º B" },  "4-6": { gradeClass: "3º B" },
+  "4-8": { gradeClass: "4TO AÑO" }, "4-9": { gradeClass: "4TO AÑO" },
+};
 
 const app = express();
 app.use(express.json());
