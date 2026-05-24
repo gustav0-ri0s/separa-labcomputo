@@ -348,6 +348,18 @@ app.post("/api/reset", async (req, res) => {
 });
 
 
+// JSON error handler for /api routes — must be before Vite middleware
+// Prevents Vite's connect error handler from swallowing API errors as plain text
+app.use("/api", (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("[API Error]", err?.message || err);
+  if (!res.headersSent) {
+    res.status(err?.status || 500).json({
+      error: err?.message || "Error interno del servidor.",
+      details: String(err?.stack || err?.message || err)
+    });
+  }
+});
+
 // Serve static frontend files (Vite configuration)
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {

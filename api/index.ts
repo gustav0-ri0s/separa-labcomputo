@@ -280,4 +280,15 @@ app.post("/api/reset", async (_req, res) => {
   }
 });
 
+// Catch-all JSON error handler (covers body-parser errors, unhandled throws, etc.)
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("[API Error]", err?.message || err);
+  if (!res.headersSent) {
+    res.status(err?.status || 500).json({
+      error: err?.message || "Error interno del servidor.",
+      details: String(err?.message || err)
+    });
+  }
+});
+
 export default app;

@@ -253,7 +253,9 @@ export default function App() {
         })
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({
+        error: `Error del servidor (código ${response.status}). Verifica la consola del servidor.`
+      }));
       if (!response.ok) {
         const errMsg = result.details ? `${result.error} (Detalle: ${result.details})` : (result.error || "No se pudo realizar la reserva.");
         throw new Error(errMsg);
@@ -299,7 +301,9 @@ export default function App() {
         method: "DELETE"
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({
+        error: `Error del servidor (código ${response.status}).`
+      }));
       if (!response.ok) {
         throw new Error(result.error || "No se pudo cancelar la reserva.");
       }
