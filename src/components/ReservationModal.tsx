@@ -83,38 +83,19 @@ export function ReservationModal({
   const getSlotNameForDay = (idx: number) => {
     const slot = ALL_SLOTS[idx];
     if (!slot) return "";
-    if (idx === 8) {
-      if (localDayIndex === 0) {
-        return "1:05 – 1:50";
-      } else {
-        return "1:05 – 2:05";
-      }
-    }
     return slot.name;
   };
 
   const getSlotEndForDay = (idx: number) => {
     const slot = ALL_SLOTS[idx];
     if (!slot) return "";
-    if (idx === 7) return "1:05";
-    if (idx === 8) {
-      if (localDayIndex === 0) {
-        return "1:50";
-      } else {
-        return "2:05";
-      }
-    }
-    if (idx === 9) return "2:05";
-    
-    // Convert 24h to 12h representation for times after 12:00
     const parts = slot.end.split(":");
     if (parts.length === 2) {
       const h = parseInt(parts[0], 10);
-      if (h > 12) {
-        return `${h - 12}:${parts[1]}`;
-      } else if (h === 0) {
-        return `12:${parts[1]}`;
-      }
+      const m = parts[1];
+      if (h > 12) return `${h - 12}:${m}`;
+      if (h === 0) return `12:${m}`;
+      return `${h}:${m}`;
     }
     return slot.end;
   };

@@ -2,17 +2,16 @@ import { useState, useEffect } from "react";
 import { TIME_SLOTS, DEFAULT_CLASSES, Reservation, NotificationLog } from "./types";
 import { NotificationCenter } from "./components/NotificationCenter";
 import { ReservationModal } from "./components/ReservationModal";
-import { 
-  Calendar, 
-  Clock, 
-  Trash2, 
-  Plus, 
-  Sparkles, 
-  RefreshCw, 
-  Lock, 
-  User, 
-  HelpCircle, 
-  FileText, 
+import {
+  Calendar,
+  Clock,
+  Trash2,
+  Plus,
+  Sparkles,
+  RefreshCw,
+  Lock,
+  User,
+  HelpCircle,
   CheckCircle,
   AlertTriangle,
   Info,
@@ -147,6 +146,7 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState<{ text: string; channel: string; active: boolean } | null>(null);
 
   const [consoleTab, setConsoleTab] = useState<"directory" | "notifications">("directory");
+  const [showHelp, setShowHelp] = useState(false);
 
   // Fetch reservations & notifications
   const loadData = async (showSyncIndicator = false) => {
@@ -572,255 +572,162 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col font-sans text-slate-900 selection:bg-emerald-500/10 antialiased">
-      
-      {/* Top Warning Notification Slide-In Toast */}
+    <div className="min-h-screen bg-slate-50/80 flex flex-col font-sans text-slate-900 antialiased">
+
+      {/* Toast notification */}
       {toastMessage && toastMessage.active && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg p-4 bg-slate-900 border border-slate-800 text-white rounded-2xl shadow-2xl flex items-start gap-3.5 animate-in slide-in-from-top-4 duration-300">
-          <div className="bg-emerald-500/20 text-emerald-400 p-2 rounded-xl mt-0.5 shrink-0">
-            <CheckCircle className="w-5 h-5" />
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md p-4 bg-slate-900 border border-slate-800 text-white rounded-2xl shadow-2xl flex items-start gap-3 animate-in slide-in-from-top-4 duration-300">
+          <div className="bg-emerald-500/20 text-emerald-400 p-1.5 rounded-lg shrink-0">
+            <CheckCircle className="w-4 h-4" />
           </div>
-          <div className="flex-1 space-y-1">
-            <h4 className="font-bold text-xs text-slate-100">Notificación Despachada</h4>
-            <p className="text-xs text-emerald-300 font-medium leading-normal">{toastMessage.text}</p>
-            <p className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              {toastMessage.channel}
-            </p>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-emerald-300 leading-snug">{toastMessage.text}</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">{toastMessage.channel}</p>
             {lastCreatedReservation && (
               <div className="pt-1.5">
                 <a
                   href={getGoogleCalendarUrl(lastCreatedReservation)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-md transition-colors"
+                  className="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors"
                 >
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>Añadir a mi Google Calendar</span>
+                  <Calendar className="w-3 h-3" />
+                  <span>Google Calendar</span>
                 </a>
               </div>
             )}
           </div>
-          <button 
+          <button
             onClick={() => setToastMessage(prev => prev ? { ...prev, active: false } : null)}
-            className="text-slate-400 hover:text-white font-medium text-xs px-2 py-1 rounded"
+            className="text-slate-500 hover:text-white p-0.5 shrink-0"
           >
-            Cerrar
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Primary Header Navbar */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-150/80 backdrop-blur-md px-4 lg:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          
-          <div className="flex items-center gap-3">
-            <div className="bg-emerald-600 text-white p-2.5 rounded-2xl shadow-sm shadow-emerald-600/10">
-              <Calendar className="w-6 h-6 stroke-2" />
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-150 px-4 lg:px-6 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="bg-emerald-600 text-white p-2 rounded-xl shadow-sm shadow-emerald-600/20">
+              <Calendar className="w-5 h-5 stroke-2" />
             </div>
-            <div>
-              <h1 className="text-lg font-extrabold tracking-tight text-slate-900 uppercase">
-                Agenda Digital para Computación
-              </h1>
-              <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
-                <span>Reserva e interacción de horarios para la sala de cómputo</span>
-                <span className="text-slate-300">•</span>
-                <span className="text-slate-500">Colegio Primaria y Secundaria</span>
-              </p>
-            </div>
+            <span className="text-sm font-extrabold tracking-tight text-slate-900 uppercase hidden sm:block">
+              Sala de Cómputo · MUIVC
+            </span>
+            <span className="text-sm font-extrabold tracking-tight text-slate-900 uppercase sm:hidden">
+              Cómputo
+            </span>
           </div>
 
-          {/* Sync Real-Time Indicator & Reset options */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full font-semibold ${
+              syncStatus === "syncing" ? "bg-amber-50 text-amber-700 animate-pulse"
+              : syncStatus === "error" ? "bg-rose-50 text-rose-700"
+              : "bg-emerald-50 text-emerald-700"
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                syncStatus === "syncing" ? "bg-amber-500"
+                : syncStatus === "error" ? "bg-rose-500"
+                : "bg-emerald-500"
+              }`}></span>
+              <span className="hidden sm:inline">
+                {syncStatus === "error" ? "Sin conexión" : syncStatus === "syncing" ? "Sync..." : "En vivo"}
+              </span>
+              <button onClick={() => loadData(true)} className="text-current opacity-60 hover:opacity-100 transition-opacity" title="Sincronizar">
+                <RefreshCw className="w-3 h-3" />
+              </button>
+            </div>
+
             {userEmail && (
-              <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1 text-right">
-                <div className="bg-emerald-50 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shadow-inner shrink-0 border border-emerald-100">
-                  {userName ? userName.slice(0, 2).toUpperCase() : "DOC"}
+              <div className="flex items-center gap-1.5">
+                <div className="bg-emerald-50 text-emerald-800 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-extrabold border border-emerald-100 shrink-0">
+                  {userName ? userName.slice(0, 2).toUpperCase() : "?"}
                 </div>
-                <div className="hidden sm:block">
-                  <div className="text-xs font-extrabold text-slate-800 leading-tight">{userName}</div>
-                  <div className="text-[9px] text-slate-400 font-mono font-bold leading-none">{userEmail}</div>
-                </div>
+                <span className="text-xs font-semibold text-slate-700 hidden md:block max-w-[120px] truncate">{userName}</span>
                 <button
                   onClick={() => {
-                    const confirmLogout = window.confirm("¿Desea cerrar sesión en la agenda?");
-                    if (confirmLogout) {
+                    if (window.confirm("¿Cerrar sesión?")) {
                       localStorage.removeItem("muivc_email");
                       localStorage.removeItem("muivc_name");
                       setUserEmail(null);
                       setUserName(null);
                     }
                   }}
-                  className="ml-1.5 text-[9px] font-bold text-slate-400 hover:text-rose-600 transition-colors bg-slate-100/80 hover:bg-rose-50 px-2 py-1 rounded-lg border border-slate-150"
-                  title="Cerrar sesión"
+                  className="text-[10px] font-bold text-slate-400 hover:text-rose-600 transition-colors px-1.5 py-0.5 rounded hover:bg-rose-50"
                 >
                   Salir
                 </button>
               </div>
             )}
-
-            <div className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium ${
-              syncStatus === "syncing" 
-                ? "bg-amber-50 text-amber-700 animate-pulse" 
-                : syncStatus === "error" 
-                ? "bg-rose-50 text-rose-700" 
-                : "bg-emerald-50 text-emerald-700"
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${
-                syncStatus === "syncing" 
-                  ? "bg-amber-500" 
-                  : syncStatus === "error" 
-                  ? "bg-rose-500" 
-                  : "bg-emerald-500"
-              }`}></span>
-              <span>
-                {syncStatus === "syncing" 
-                  ? "Sincronizando..." 
-                  : syncStatus === "error" 
-                  ? "Error de conexión" 
-                  : "Tiempo Real Activo"}
-              </span>
-              <button 
-                onClick={() => loadData(true)} 
-                className="ml-1 text-slate-400 hover:text-slate-600 transition-transform hover:rotate-45"
-                title="Sincronizar ahora"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            
-            <div className="text-[10px] text-slate-400 font-mono font-medium hidden md:block">
-              Último control: {lastSyncTime.toLocaleTimeString()}
-            </div>
           </div>
-
         </div>
       </header>
 
-      {/* Body Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-6 py-6 lg:py-8 space-y-6">
-        
-        {/* Navigation & Tab-like Selector */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-5 shadow-sm space-y-5">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-            
-            {/* Week navigation arrows */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={handlePrevWeek}
-                className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 font-bold"
-                title="Semana anterior"
-              >
-                ← Anterior
-              </button>
-              
-              <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl">
-                <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                <span className="text-xs font-bold font-mono text-slate-700">
-                  {getWeekRangeLabel()}
-                </span>
-              </div>
+      {/* Main content */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 lg:px-6 py-4 space-y-4">
 
-              <button
-                onClick={handleNextWeek}
-                className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 font-bold"
-                title="Semana siguiente"
-              >
-                Siguiente →
-              </button>
+        {/* Week navigation row */}
+        <div className="bg-white rounded-2xl border border-slate-100 px-4 py-3 shadow-sm flex flex-wrap items-center gap-2">
+          <button
+            onClick={handlePrevWeek}
+            className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-bold transition-colors"
+          >
+            ← Ant.
+          </button>
 
-              <div className="ml-2 flex items-center gap-2">
-                <input
-                  type="date"
-                  value={dateInput}
-                  onChange={(e) => handleDatePick(e.target.value)}
-                  className="px-3 py-2 text-xs border border-slate-200 rounded-xl text-slate-700 bg-white font-medium outline-none focus:border-emerald-500"
-                />
-              </div>
-            </div>
-
-            {/* QUICK LINK REFERENCE TABS */}
-            <div className="flex flex-wrap items-center gap-2 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/70">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 px-2.5">Accesos Rápidos:</span>
-              <button
-                onClick={jumpToReferenceWeekOccupied}
-                className={`text-xs px-3.5 py-2 rounded-xl transition-all font-semibold ${
-                  isOccupied
-                    ? "bg-white text-emerald-800 shadow-sm border border-slate-100"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                📅 Sem. 25-29 de Mayo (Con computación fija)
-              </button>
-              <button
-                onClick={jumpToReferenceWeekFree}
-                className={`text-xs px-3.5 py-2 rounded-xl transition-all font-semibold ${
-                  !isOccupied
-                    ? "bg-white text-emerald-800 shadow-sm border border-slate-100"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                📆 Sem. 01-05 de Junio (Semana libre)
-              </button>
-            </div>
-
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-lg">
+            <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span className="text-xs font-bold text-slate-700">{getWeekRangeLabel()}</span>
           </div>
 
-          {/* Block Status Banner */}
-          <div className={`p-4 rounded-2xl border flex items-start gap-3.5 ${
-            isOccupied 
-              ? "bg-amber-50/50 border-amber-200/60 text-amber-900" 
-              : "bg-emerald-50/40 border-emerald-200/50 text-emerald-900"
+          <button
+            onClick={handleNextWeek}
+            className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-bold transition-colors"
+          >
+            Sig. →
+          </button>
+
+          <input
+            type="date"
+            value={dateInput}
+            onChange={(e) => handleDatePick(e.target.value)}
+            className="px-3 py-1.5 text-xs border border-slate-200 rounded-lg text-slate-700 bg-white font-medium outline-none focus:border-emerald-500"
+          />
+
+          <span className={`ml-auto px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 ${
+            isOccupied
+              ? "bg-amber-50 text-amber-800 border border-amber-200/60"
+              : "bg-emerald-50 text-emerald-800 border border-emerald-200/50"
           }`}>
-            <div className={`p-2 rounded-xl ${
-              isOccupied ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
-            } shrink-0`}>
-              {isOccupied ? <Lock className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
-            </div>
-            <div>
-              <h3 className="font-bold text-xs flex items-center gap-2">
-                <span>{isOccupied ? "Semana con Clases de Computación (Bloqueos Activos)" : "Semana de Receso de Computación (Sala Completamente Libre)"}</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] uppercase font-mono tracking-wider bg-white font-semibold">
-                  {isOccupied ? "Imagen Izquierda" : "Imagen Derecha"}
-                </span>
-              </h3>
-              <p className="text-xs text-slate-700 mt-1 leading-normal font-medium max-w-4xl">
-                {isOccupied 
-                  ? "Durante esta semana (del 25 al 29 de mayo, y cada 2 semanas), la sala de cómputo tiene horarios fijos ocupados por las clases curriculares de computación escolar. Los docentes pueden escribir y separar en los espacios vacíos libres. Los horarios ocupados fijos están bloqueados con un candado."
-                  : "Durante esta semana (del 1 al 5 de junio, alternando), NO hay clases de computación curricular predefinidas. ¡Toda la sala está 100% disponible para que los docentes la reserven según sus necesidades!"}
-              </p>
-            </div>
-          </div>
+            {isOccupied ? <Lock className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
+            <span>{isOccupied ? "Semana con computación" : "Semana libre"}</span>
+          </span>
+
+          {userEmail?.toLowerCase() === "informatica@muivc.com" && (
+            <button
+              onClick={handleResetSystem}
+              className="text-[10px] font-bold text-rose-400 hover:text-rose-600 hover:bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-100 transition-colors"
+              title="Reiniciar todas las reservas"
+            >
+              Reiniciar
+            </button>
+          )}
         </div>
 
-        {/* Main Schedule Panel */}
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden p-4 lg:p-6 space-y-4">
-            
-            {/* Legend / Color Explanation */}
-            <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-50/50 p-3.5 rounded-2xl border border-slate-100 text-xs text-slate-600">
-              <span className="font-semibold text-slate-700">Guía de colores:</span>
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-1.5 font-medium">
-                  <span className="inline-block w-3.5 h-3.5 rounded border border-sky-300 bg-sky-100 shrink-0"></span>
-                  <span>Clases fijas de computación</span>
-                </div>
-                <div className="flex items-center gap-1.5 font-medium">
-                  <span className="inline-block w-3.5 h-3.5 rounded border border-indigo-200 bg-indigo-600 shrink-0"></span>
-                  <span className="text-slate-800">Reservadas por Docentes</span>
-                </div>
-                <div className="flex items-center gap-1.5 font-medium">
-                  <span className="inline-block w-3.5 h-3.5 rounded border border-slate-200 bg-white shadow-inner shrink-0"></span>
-                  <span>Disp. para reservar</span>
-                </div>
-                <div className="flex items-center gap-1.5 font-medium">
-                  <span className="inline-block w-3.5 h-3.5 rounded border border-slate-200 bg-slate-100/80 shrink-0"></span>
-                  <span className="text-slate-500">No disponible/Recreo</span>
-                </div>
-              </div>
-            </div>
+        {/* Calendar */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
-            {/* TABLE GRID AREA */}
-            <div className="overflow-x-auto rounded-2xl border border-slate-150 relative">
+          {/* Compact legend */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-4 py-2.5 border-b border-slate-100 text-[11px] text-slate-500 font-medium">
+            <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded border border-sky-300 bg-sky-100 shrink-0"></span>Computación fija</span>
+            <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded bg-indigo-600 shrink-0"></span>Reservado</span>
+            <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded border border-slate-200 bg-white shadow-inner shrink-0"></span>Libre — clic para reservar</span>
+          </div>
+
+          {/* TABLE GRID AREA */}
+          <div className="overflow-x-auto relative">
               
               <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
                 
@@ -991,200 +898,127 @@ export default function App() {
               </table>
 
             </div>
+          </div>
 
-            {/* Quick Helper Instructions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3.5 border-t border-slate-100 text-xs text-slate-600">
-              <div className="bg-slate-50/50 p-3.5 rounded-2xl border border-slate-100 space-y-1">
-                <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-                  <Info className="w-4 h-4 text-emerald-600" />
-                  ¿Cómo reservar un espacio libre?
-                </h4>
-                <p className="text-slate-600 leading-relaxed font-semibold">
-                  1. Localiza un casillero vacío que diga <strong>"Disponible"</strong>.<br />
-                  2. Haz clic en el casillero.<br />
-                  3. Ingresa tu nombre, tu grado/sección y elige el bloque hasta el que deseas reservar (¡combina múltiples horas!).<br />
-                  4. ¡Listo! Se te enviará una notificación con los detalles de tu confirmación.
-                </p>
-              </div>
-
-              <div className="bg-slate-50/50 p-3.5 rounded-2xl border border-slate-100 space-y-1">
-                <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
-                  Reglas de la Sala de Cómputo
-                </h4>
-                <p className="text-slate-600 leading-relaxed font-semibold">
-                  • Un docente no puede sobre-escribir una clase de computación fija ya establecida ni una reserva previa ya confirmada.<br />
-                  • Las reservas son en tiempo real. Cualquier docente que acceda desde su celular verá tus reservas instantáneamente.
-                </p>
+          {/* Bottom panel – reservations & notifications */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">
+              <div className="flex bg-slate-100 p-1 rounded-xl">
+                <button
+                  onClick={() => setConsoleTab("directory")}
+                  className={`text-xs px-3.5 py-1.5 rounded-lg transition-all font-bold ${
+                    consoleTab === "directory" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  Reservas ({reservations.length})
+                </button>
+                <button
+                  onClick={() => setConsoleTab("notifications")}
+                  className={`text-xs px-3.5 py-1.5 rounded-lg transition-all font-bold ${
+                    consoleTab === "notifications" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  Alertas ({notifications.length})
+                </button>
               </div>
             </div>
 
-            {/* TABBED DASHBOARD CONTROLS FOR REGISTERS & NOTIFICATIONS */}
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden p-5 lg:p-6 space-y-5" id="dashboard-bottom-panel">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-indigo-600" />
-                    <span>Directorio Escolar y Comprobantes en Tiempo Real</span>
-                  </h3>
-                  <p className="text-xs text-slate-500 font-semibold">
-                    Consulte todas las reservas registradas y el registro de alertas enviadas a los docentes.
-                  </p>
-                </div>
-
-                <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200/50">
-                  <button
-                    onClick={() => setConsoleTab("directory")}
-                    className={`text-xs px-4 py-2 rounded-xl transition-all font-bold cursor-pointer ${
-                      consoleTab === "directory"
-                        ? "bg-white text-indigo-700 shadow-sm"
-                        : "text-slate-500 hover:text-slate-700"
-                    }`}
-                  >
-                    Directorio de Reservas ({reservations.length})
-                  </button>
-                  <button
-                    onClick={() => setConsoleTab("notifications")}
-                    className={`text-xs px-4 py-2 rounded-xl transition-all font-bold cursor-pointer ${
-                      consoleTab === "notifications"
-                        ? "bg-white text-indigo-700 shadow-sm"
-                        : "text-slate-500 hover:text-slate-700"
-                    }`}
-                  >
-                    Alertas Despachadas ({notifications.length})
-                  </button>
-                </div>
-              </div>
-
+            <div className="p-4">
               {consoleTab === "directory" ? (
-                <div className="space-y-4">
-                  {reservations.length === 0 ? (
-                    <div className="text-center py-12 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-slate-400 space-y-2.5">
-                      <Calendar className="w-10 h-10 mx-auto stroke-1 text-slate-300" />
-                      <div>
-                        <p className="text-xs font-bold text-slate-500">No hay reservas registradas en el sistema</p>
-                        <p className="text-[10px] mt-0.5 font-semibold text-slate-400">
-                          Todos los espacios del calendario de cómputo están disponibles para ser reservados.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto rounded-2xl border border-slate-150">
-                      <table className="w-full text-left border-collapse text-xs min-w-[650px]">
-                        <thead>
-                          <tr className="bg-slate-50 border-b border-slate-150 text-slate-500 font-semibold">
-                            <th className="p-3">Docente</th>
-                            <th className="p-3">Grado / Sección</th>
-                            <th className="p-3">Fecha</th>
-                            <th className="p-3">Horario</th>
-                            <th className="p-3">Contacto</th>
-                            <th className="p-3 text-right">Controles</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {reservations.map((res, idx) => {
-                            const isOwn = isAuthorizedToEdit(res.email, res.teacherName);
-                            return (
-                              <tr key={res.id || `res-${idx}`} className="hover:bg-slate-50/50 bg-white">
-                                <td className="p-3 font-bold text-slate-800 uppercase">
-                                  {res.teacherName}
-                                  {isOwn && (
-                                    <span className="ml-1.5 bg-indigo-100 text-indigo-700 font-extrabold text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full border border-indigo-200">
-                                      Tú
-                                    </span>
-                                  )}
-                                </td>
-                                <td className="p-3 font-extrabold text-indigo-600 uppercase">{res.grade} "{res.section}"</td>
-                                <td className="p-3 font-bold text-slate-700 capitalize">
-                                  {(() => {
-                                    try {
-                                      const parts = res.date.split("-").map(Number);
-                                      const d = new Date(parts[0], parts[1] - 1, parts[2]);
-                                      return d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "short" });
-                                    } catch {
-                                      return res.date;
-                                    }
-                                  })()}
-                                </td>
-                                <td className="p-3 font-semibold font-mono text-slate-500">
-                                  {TIME_SLOTS[Number(res.startSlot)]?.start} - {TIME_SLOTS[Number(res.endSlot)]?.end}
-                                </td>
-                                <td className="p-3 font-medium text-slate-500">
-                                  {res.email || res.phone || "-"}
-                                </td>
-                                <td className="p-3 text-right space-x-1.5 whitespace-nowrap">
+                reservations.length === 0 ? (
+                  <div className="text-center py-10 text-slate-400 space-y-2">
+                    <Calendar className="w-8 h-8 mx-auto stroke-1 text-slate-300" />
+                    <p className="text-xs font-semibold text-slate-500">No hay reservas registradas</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto rounded-xl border border-slate-150">
+                    <table className="w-full text-left border-collapse text-xs min-w-[600px]">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-slate-150 text-slate-500 font-semibold">
+                          <th className="p-3">Docente</th>
+                          <th className="p-3">Grado / Sección</th>
+                          <th className="p-3">Fecha</th>
+                          <th className="p-3">Horario</th>
+                          <th className="p-3">Contacto</th>
+                          <th className="p-3 text-right">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {reservations.map((res, idx) => {
+                          const isOwn = isAuthorizedToEdit(res.email, res.teacherName);
+                          return (
+                            <tr key={res.id || `res-${idx}`} className="hover:bg-slate-50/50 bg-white">
+                              <td className="p-3 font-bold text-slate-800 uppercase">
+                                {res.teacherName}
+                                {isOwn && (
+                                  <span className="ml-1.5 bg-indigo-100 text-indigo-700 text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded-full">Tú</span>
+                                )}
+                              </td>
+                              <td className="p-3 font-extrabold text-indigo-600 uppercase">{res.grade} "{res.section}"</td>
+                              <td className="p-3 font-bold text-slate-700 capitalize">
+                                {(() => {
+                                  try {
+                                    const parts = res.date.split("-").map(Number);
+                                    return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
+                                  } catch { return res.date; }
+                                })()}
+                              </td>
+                              <td className="p-3 font-semibold font-mono text-slate-500">
+                                {TIME_SLOTS[Number(res.startSlot)]?.start} - {TIME_SLOTS[Number(res.endSlot)]?.end}
+                              </td>
+                              <td className="p-3 font-medium text-slate-500">{res.email || res.phone || "–"}</td>
+                              <td className="p-3 text-right space-x-1.5 whitespace-nowrap">
+                                <button
+                                  onClick={() => {
+                                    const parts = res.date.split("-").map(Number);
+                                    setCurrentMonday(getMondayOfDate(new Date(parts[0], parts[1] - 1, parts[2])));
+                                    document.querySelector("table")?.scrollIntoView({ behavior: "smooth" });
+                                  }}
+                                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1.5 rounded-lg border border-slate-200 transition-all text-xs"
+                                >
+                                  Ver
+                                </button>
+                                {isOwn && (
                                   <button
-                                    onClick={() => {
-                                      const parts = res.date.split("-").map(Number);
-                                      const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-                                      setCurrentMonday(getMondayOfDate(dateObj));
-                                      // Scroll to the main table
-                                      document.querySelector("table")?.scrollIntoView({ behavior: "smooth" });
-                                    }}
-                                    className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
-                                    title="Ver en el calendario para esta fecha"
+                                    onClick={() => handleCancelReservation(res.id, res.teacherName)}
+                                    className="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-2.5 py-1.5 rounded-lg border border-rose-100 transition-all text-xs"
                                   >
-                                    🔍 Ver en Calendario
+                                    Liberar
                                   </button>
-                                  {isOwn && (
-                                    <button
-                                      onClick={() => handleCancelReservation(res.id, res.teacherName)}
-                                      className="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-3 py-1.5 rounded-xl border border-rose-100 hover:border-rose-200 transition-all cursor-pointer text-xs"
-                                      title="Liberar este horario cancelando la reserva"
-                                    >
-                                      ❌ Liberar
-                                    </button>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )
               ) : (
-                <div className="space-y-3 max-h-[420px] overflow-y-auto">
+                <div className="space-y-2.5 max-h-[380px] overflow-y-auto">
                   {notifications.length === 0 ? (
-                    <div className="text-center py-12 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-slate-400 space-y-2">
-                      <Mail className="w-10 h-10 mx-auto stroke-1 text-slate-300" />
-                      <p className="text-xs font-bold text-slate-500">No se han registrado envíos de notificaciones todavía</p>
+                    <div className="text-center py-10 text-slate-400 space-y-2">
+                      <Mail className="w-8 h-8 mx-auto stroke-1 text-slate-300" />
+                      <p className="text-xs font-semibold text-slate-500">Sin notificaciones</p>
                     </div>
                   ) : (
                     notifications.map((log, idx) => {
                       const isEmail = log.type === "email";
                       const isSms = log.type === "sms";
                       return (
-                        <div key={log.id || `notif-${idx}`} className="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors space-y-2">
+                        <div key={log.id || `notif-${idx}`} className="p-3 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
                           <div className="flex items-center justify-between">
                             <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                              {isEmail && <Mail className="w-4 h-4 text-blue-500 shrink-0" />}
-                              {isSms && <MessageSquare className="w-4 h-4 text-emerald-500 shrink-0" />}
-                              {!isEmail && !isSms && <Bell className="w-4 h-4 text-indigo-500 shrink-0" />}
-                              <span>{isEmail ? "Notificación Electrónica" : isSms ? "Notificación por SMS" : "Sistema"}</span>
+                              {isEmail ? <Mail className="w-3.5 h-3.5 text-blue-500 shrink-0" /> : isSms ? <MessageSquare className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> : <Bell className="w-3.5 h-3.5 text-indigo-500 shrink-0" />}
+                              {log.teacherName} · {log.grade} "{log.section}"
                             </span>
-                            <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-                              <Clock className="w-3.5 h-3.5 shrink-0" />
-                              {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {new Date(log.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </span>
                           </div>
-                          <p className="text-slate-600 leading-normal text-xs font-semibold">
-                            Se despachó un comprobante digital sobre la reserva del docente <strong className="text-slate-800 uppercase">{log.teacherName}</strong> de la sala de cómputo para <strong className="text-slate-800 uppercase">{log.grade} "{log.section}"</strong> reservada para la fecha <strong className="text-slate-800 capitalize">
-                              {(() => {
-                                try {
-                                  const parts = log.date.split("-").map(Number);
-                                  const d = new Date(parts[0], parts[1] - 1, parts[2]);
-                                  return d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
-                                } catch {
-                                  return log.date;
-                                }
-                              })()}
-                            </strong>. Rango: <strong className="text-indigo-600">{log.timeRange}</strong>.
-                          </p>
-                          <div className="pt-2 border-t border-slate-150/40 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
-                            <span>Medio de envío: <strong className="text-slate-700">{log.emailOrPhone}</strong></span>
-                            <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full font-bold">Enviado</span>
+                          <div className="text-[11px] text-slate-500 flex items-center justify-between gap-2">
+                            <span className="truncate">{log.timeRange} · {log.emailOrPhone}</span>
+                            <span className="shrink-0 bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full font-bold text-[10px]">Enviado</span>
                           </div>
                         </div>
                       );
@@ -1193,18 +1027,58 @@ export default function App() {
                 </div>
               )}
             </div>
-
           </div>
 
-      </main>
+        </main>
 
-      {/* FOOTER COLOFON */}
-      <footer className="bg-white border-t border-slate-150 py-6 text-center text-xs text-slate-500 mt-12">
-        <div className="max-w-7xl mx-auto px-4 space-y-1">
-          <p className="font-bold">Agenda Digital de Cómputo © 2026. Todos los derechos reservados.</p>
-          <p className="text-[11px] font-semibold text-slate-400">Desarrollado con arquitectura full-stack de sincronización en tiempo real y bloqueo automático de clases fijos.</p>
-        </div>
-      </footer>
+        {/* Floating help button */}
+        <button
+          onClick={() => setShowHelp(true)}
+          className="fixed bottom-6 right-6 z-40 w-11 h-11 bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-300 rounded-full shadow-lg flex items-center justify-center transition-all hover:shadow-xl"
+          title="Ayuda"
+        >
+          <HelpCircle className="w-5 h-5" />
+        </button>
+
+        {/* Help modal */}
+        {showHelp && (
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-xl border border-slate-100 w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4 text-emerald-600" />
+                  ¿Cómo usar la agenda?
+                </h3>
+                <button onClick={() => setShowHelp(false)} className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-5 space-y-4 text-xs text-slate-600">
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-slate-800">Reservar un espacio</h4>
+                  <ol className="space-y-1 text-slate-600 leading-relaxed">
+                    <li>1. Navega a la semana deseada con las flechas.</li>
+                    <li>2. Haz clic en una celda blanca libre.</li>
+                    <li>3. Completa el formulario y elige el horario de fin para combinar bloques.</li>
+                    <li>4. Confirma — la reserva se muestra en tiempo real para todos.</li>
+                  </ol>
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-slate-800">Tipos de celdas</h4>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded border border-sky-300 bg-sky-100 shrink-0"></span>Clase fija de computación (bloqueada)</div>
+                    <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded bg-indigo-600 shrink-0"></span>Reservada por docente — clic para ver</div>
+                    <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded border border-slate-200 bg-white shadow-inner shrink-0"></span>Libre — clic para reservar</div>
+                  </div>
+                </div>
+                <div className="p-3 bg-amber-50 border border-amber-200/60 rounded-xl text-amber-800 space-y-1">
+                  <p className="font-bold">Semanas alternadas</p>
+                  <p>Cada 2 semanas hay clases fijas de computación. Las demás semanas, la sala está completamente libre.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Booking Form Dialog Modal */}
       <ReservationModal
