@@ -1,0 +1,6 @@
+{
+  "name": "Agenda de Computación",
+  "description": "Agenda digital para la reserva de la sala de cómputo por parte de los docentes con bloqueos automáticos, combinación de horas, notificaciones en tiempo real y visualización de grado/sección.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
