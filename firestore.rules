@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reservations rules
+    match /reservations/{reservationId} {
+      allow read, write: if true;
+    }
+
+    // Notifications rules
+    match /notifications/{notificationId} {
+      allow read, write: if true;
+    }
+  }
+}
