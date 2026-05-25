@@ -103,6 +103,7 @@ export default function App() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [lastCreatedReservation, setLastCreatedReservation] = useState<Reservation | null>(null);
   const [showConsideraciones, setShowConsideraciones] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null);
 
   // Helper to determine if current user has permissions to cancel or modify a reservation
   const isAuthorizedToEdit = (resEmail?: string, resTeacherName?: string) => {
@@ -290,12 +291,16 @@ export default function App() {
     }
   };
 
-  // Cancel/Delete a reservation
-  const handleCancelReservation = async (reservationId: string, docName: string) => {
-    const confirmCancel = window.confirm(
-      `¿Está seguro que desea cancelar la reserva de la sala de cómputo del docente "${docName}"?`
-    );
-    if (!confirmCancel) return;
+  // Cancel/Delete a reservation — step 1: show custom confirm dialog
+  const handleCancelReservation = (reservationId: string, docName: string) => {
+    setConfirmDelete({ id: reservationId, name: docName });
+  };
+
+  // Cancel/Delete a reservation — step 2: execute after user confirms
+  const executeDelete = async () => {
+    if (!confirmDelete) return;
+    const { id: reservationId, name: docName } = confirmDelete;
+    setConfirmDelete(null);
 
     try {
       const response = await fetch(`/api/reservations/${reservationId}`, {
@@ -1323,6 +1328,39 @@ export default function App() {
                   Volver a la Agenda
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CONFIRMACIÓN DE BORRADO */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-sm p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-start gap-3">
+              <div className="bg-rose-100 text-rose-600 p-2.5 rounded-full shrink-0">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-black text-slate-800 text-sm">¿Cancelar esta reserva?</h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  Se liberará el horario reservado por <span className="font-bold text-slate-700">"{confirmDelete.name}"</span>. Esta acción no se puede deshacer.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => setConfirmDelete(null)}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl transition-all cursor-pointer"
+              >
+                No, mantener
+              </button>
+              <button
+                onClick={executeDelete}
+                className="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-md cursor-pointer"
+              >
+                Sí, cancelar reserva
+              </button>
             </div>
           </div>
         </div>
