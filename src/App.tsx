@@ -1331,11 +1331,11 @@ export default function App() {
 
       {/* OVERLAY DE CONSIDERACIONES — aparece sobre el modal de éxito */}
       {showConsideraciones && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 bg-slate-900/75 backdrop-blur-sm">
+          <div className="relative w-full h-full flex items-center justify-center animate-in fade-in zoom-in-95 duration-200">
             <button
               onClick={() => setShowConsideraciones(false)}
-              className="absolute -top-3 -right-3 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full w-9 h-9 flex items-center justify-center shadow-lg transition-all cursor-pointer border-2 border-white"
+              className="absolute top-0 right-0 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all cursor-pointer border-2 border-white"
               title="Cerrar"
             >
               <X className="w-5 h-5" />
@@ -1343,7 +1343,7 @@ export default function App() {
             <img
               src="/consideraciones.png"
               alt="Consideraciones para el uso de la Sala de Cómputo"
-              className="w-full rounded-2xl shadow-2xl border-2 border-white/10"
+              className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
             />
           </div>
         </div>
