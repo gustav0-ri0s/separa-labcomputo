@@ -102,6 +102,7 @@ export default function App() {
   const [userName, setUserName] = useState<string | null>(() => localStorage.getItem("muivc_name"));
   const [loginError, setLoginError] = useState<string | null>(null);
   const [lastCreatedReservation, setLastCreatedReservation] = useState<Reservation | null>(null);
+  const [showConsideraciones, setShowConsideraciones] = useState(false);
 
   // Helper to determine if current user has permissions to cancel or modify a reservation
   const isAuthorizedToEdit = (resEmail?: string, resTeacherName?: string) => {
@@ -263,6 +264,7 @@ export default function App() {
 
       if (result.success && result.reservation) {
         setLastCreatedReservation(result.reservation);
+        setShowConsideraciones(true);
       }
 
       // Show real confirmation notification Banner
@@ -1323,6 +1325,26 @@ export default function App() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* OVERLAY DE CONSIDERACIONES — aparece sobre el modal de éxito */}
+      {showConsideraciones && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowConsideraciones(false)}
+              className="absolute -top-3 -right-3 z-10 bg-slate-900 hover:bg-slate-700 text-white rounded-full w-9 h-9 flex items-center justify-center shadow-lg transition-all cursor-pointer border-2 border-white"
+              title="Cerrar"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src="/consideraciones.png"
+              alt="Consideraciones para el uso de la Sala de Cómputo"
+              className="w-full rounded-2xl shadow-2xl border-2 border-white/10"
+            />
           </div>
         </div>
       )}
