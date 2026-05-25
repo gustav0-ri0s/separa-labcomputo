@@ -264,7 +264,6 @@ export default function App() {
 
       if (result.success && result.reservation) {
         setLastCreatedReservation(result.reservation);
-        setShowConsideraciones(true);
       }
 
       // Show real confirmation notification Banner
@@ -1185,7 +1184,7 @@ export default function App() {
               {/* Actions list */}
               <div className="space-y-2 pt-1">
                 <button
-                  onClick={() => setLastCreatedReservation(null)}
+                  onClick={() => { setLastCreatedReservation(null); setShowConsideraciones(true); }}
                   className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center cursor-pointer"
                 >
                   Listo, Volver a la Agenda Principal
