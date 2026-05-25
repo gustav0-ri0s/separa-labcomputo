@@ -448,6 +448,25 @@ export default function App() {
     setIsModalOpen(true);
   };
 
+  const RESERVATION_COLORS = [
+    { bg: "bg-indigo-600",  hover: "hover:bg-indigo-700",  active: "active:bg-indigo-800",  badge: "bg-indigo-700/50",  icon: "text-indigo-200",  overlay: "bg-indigo-700/95"  },
+    { bg: "bg-emerald-600", hover: "hover:bg-emerald-700", active: "active:bg-emerald-800", badge: "bg-emerald-700/50", icon: "text-emerald-200", overlay: "bg-emerald-700/95" },
+    { bg: "bg-rose-600",    hover: "hover:bg-rose-700",    active: "active:bg-rose-800",    badge: "bg-rose-700/50",    icon: "text-rose-200",    overlay: "bg-rose-700/95"    },
+    { bg: "bg-orange-600",  hover: "hover:bg-orange-700",  active: "active:bg-orange-800",  badge: "bg-orange-700/50",  icon: "text-orange-200",  overlay: "bg-orange-700/95"  },
+    { bg: "bg-teal-600",    hover: "hover:bg-teal-700",    active: "active:bg-teal-800",    badge: "bg-teal-700/50",    icon: "text-teal-200",    overlay: "bg-teal-700/95"    },
+    { bg: "bg-violet-600",  hover: "hover:bg-violet-700",  active: "active:bg-violet-800",  badge: "bg-violet-700/50",  icon: "text-violet-200",  overlay: "bg-violet-700/95"  },
+    { bg: "bg-cyan-600",    hover: "hover:bg-cyan-700",    active: "active:bg-cyan-800",    badge: "bg-cyan-700/50",    icon: "text-cyan-200",    overlay: "bg-cyan-700/95"    },
+    { bg: "bg-fuchsia-600", hover: "hover:bg-fuchsia-700", active: "active:bg-fuchsia-800", badge: "bg-fuchsia-700/50", icon: "text-fuchsia-200", overlay: "bg-fuchsia-700/95" },
+  ];
+
+  const getReservationColor = (id: string) => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      hash = (hash * 31 + id.charCodeAt(i)) & 0xffff;
+    }
+    return RESERVATION_COLORS[hash % RESERVATION_COLORS.length];
+  };
+
   // Color helper to get colors based on image
   const getColorClasses = (colorTheme: string) => {
     switch (colorTheme) {
@@ -722,7 +741,12 @@ export default function App() {
           {/* Compact legend */}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-4 py-2.5 border-b border-slate-100 text-[11px] text-slate-500 font-medium">
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded border border-sky-300 bg-sky-100 shrink-0"></span>Computación fija</span>
-            <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded bg-indigo-600 shrink-0"></span>Reservado</span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block w-3 h-3 rounded bg-emerald-500 shrink-0"></span>
+              <span className="inline-block w-3 h-3 rounded bg-rose-500 shrink-0 -ml-1.5"></span>
+              <span className="inline-block w-3 h-3 rounded bg-violet-500 shrink-0 -ml-1.5"></span>
+              Reservado
+            </span>
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded border border-slate-200 bg-white shadow-inner shrink-0"></span>Libre — clic para reservar</span>
           </div>
 
@@ -820,22 +844,23 @@ export default function App() {
                           if (spanInfo.type === "reservation") {
                             const teacherRes = spanInfo.data;
                             const isOwnReservation = isAuthorizedToEdit(teacherRes.email, teacherRes.teacherName);
-                            
+                            const resColor = getReservationColor(teacherRes.id);
+
                             return (
-                              <td 
-                                key={dayIdx} 
+                              <td
+                                key={dayIdx}
                                 rowSpan={spanInfo.rowSpan}
                                 onClick={() => setSelectedResForDetail(teacherRes)}
-                                className="p-3 text-center align-middle bg-indigo-600 border-r border-slate-150 last:border-r-0 text-white relative group transition-all duration-150 cursor-pointer hover:bg-indigo-700 active:bg-indigo-800 shadow-inner"
+                                className={`p-3 text-center align-middle ${resColor.bg} ${resColor.hover} ${resColor.active} border-r border-slate-150 last:border-r-0 text-white relative group transition-all duration-150 cursor-pointer shadow-inner`}
                                 title="Hacer clic para ver detalles o liberar esta reserva"
                               >
                                 <div className="space-y-1">
                                   <div className="text-xs font-black tracking-tight drop-shadow-sm uppercase">
                                     {teacherRes.grade} "{teacherRes.section}"
                                   </div>
-                                  
-                                  <div className="text-[10px] opacity-90 inline-flex items-center justify-center gap-1 bg-indigo-700/50 px-2 py-0.5 rounded-full font-semibold">
-                                    <User className="w-3 h-3 text-indigo-200 shrink-0" />
+
+                                  <div className={`text-[10px] opacity-90 inline-flex items-center justify-center gap-1 ${resColor.badge} px-2 py-0.5 rounded-full font-semibold`}>
+                                    <User className={`w-3 h-3 ${resColor.icon} shrink-0`} />
                                     <span className="truncate max-w-[100px]" title={teacherRes.teacherName}>
                                       {teacherRes.teacherName.split(" ").slice(0, 2).join(" ")}
                                     </span>
@@ -843,7 +868,7 @@ export default function App() {
                                 </div>
 
                                 {/* Hover Cancel Button */}
-                                <div className="absolute inset-0 bg-indigo-700/95 rounded-lg flex flex-col items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-2">
+                                <div className={`absolute inset-0 ${resColor.overlay} rounded-lg flex flex-col items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-2`}>
                                   <a
                                     href={getGoogleCalendarUrl(teacherRes)}
                                     target="_blank"
@@ -1067,7 +1092,12 @@ export default function App() {
                   <h4 className="font-bold text-slate-800">Tipos de celdas</h4>
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded border border-sky-300 bg-sky-100 shrink-0"></span>Clase fija de computación (bloqueada)</div>
-                    <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded bg-indigo-600 shrink-0"></span>Reservada por docente — clic para ver</div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block w-3 h-3 rounded bg-emerald-500 shrink-0"></span>
+                      <span className="inline-block w-3 h-3 rounded bg-rose-500 shrink-0 -ml-1"></span>
+                      <span className="inline-block w-3 h-3 rounded bg-violet-500 shrink-0 -ml-1"></span>
+                      Reservada por docente — clic para ver
+                    </div>
                     <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded border border-slate-200 bg-white shadow-inner shrink-0"></span>Libre — clic para reservar</div>
                   </div>
                 </div>
