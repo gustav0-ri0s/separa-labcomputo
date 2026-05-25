@@ -45,7 +45,8 @@ export const TIME_SLOTS: TimeSlot[] = [
   { name: "11:35 – 12:20", start: "11:35", end: "12:20" },
   { name: "12:20 – 1:05", start: "12:20", end: "13:05" },
   { name: "1:05 – 1:50", start: "13:05", end: "13:50" },
-  { name: "1:50 – 2:05", start: "13:50", end: "14:05" }
+  { name: "1:50 – 2:05", start: "13:50", end: "14:05" },
+  { name: "2:05 – 2:35", start: "14:05", end: "14:35" }
 ];
 
 export const DEFAULT_CLASSES: Record<string, DefaultClass> = {
@@ -64,12 +65,14 @@ export const DEFAULT_CLASSES: Record<string, DefaultClass> = {
   "1-3": { gradeClass: "6º B", colorTheme: "peach" },
   "1-8": { gradeClass: "3ER AÑO A", colorTheme: "yellow" },
   "1-9": { gradeClass: "3ER AÑO A", colorTheme: "yellow" },
+  "1-10": { gradeClass: "3ER AÑO A", colorTheme: "yellow" },
 
   // Miércoles (DayIndex 2)
   "2-6": { gradeClass: "1ER AÑO B", colorTheme: "yellow" },
   "2-7": { gradeClass: "1ER AÑO B", colorTheme: "yellow" },
   "2-8": { gradeClass: "5TO AÑO", colorTheme: "yellow" },
   "2-9": { gradeClass: "5TO AÑO", colorTheme: "yellow" },
+  "2-10": { gradeClass: "5TO AÑO", colorTheme: "yellow" },
 
   // Jueves (DayIndex 3)
   "3-0": { gradeClass: "2DO AÑO B", colorTheme: "yellow" },
@@ -80,6 +83,7 @@ export const DEFAULT_CLASSES: Record<string, DefaultClass> = {
   "3-7": { gradeClass: "2DO AÑO A", colorTheme: "yellow" },
   "3-8": { gradeClass: "3ER AÑO B", colorTheme: "yellow" },
   "3-9": { gradeClass: "3ER AÑO B", colorTheme: "yellow" },
+  "3-10": { gradeClass: "3ER AÑO B", colorTheme: "yellow" },
 
   // Viernes (DayIndex 4)
   "4-0": { gradeClass: "4º B", colorTheme: "purple-light" },
@@ -89,5 +93,6 @@ export const DEFAULT_CLASSES: Record<string, DefaultClass> = {
   "4-5": { gradeClass: "3º B", colorTheme: "green" },
   "4-6": { gradeClass: "3º B", colorTheme: "green" },
   "4-8": { gradeClass: "4TO AÑO", colorTheme: "yellow" },
-  "4-9": { gradeClass: "4TO AÑO", colorTheme: "yellow" }
+  "4-9": { gradeClass: "4TO AÑO", colorTheme: "yellow" },
+  "4-10": { gradeClass: "4TO AÑO", colorTheme: "yellow" }
 };

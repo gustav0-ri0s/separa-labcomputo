@@ -50,6 +50,7 @@ const TIME_SLOTS = [
   { name: "12:20 – 1:05",  start: "12:20", end: "13:05" },
   { name: "1:05 – 1:50",   start: "13:05", end: "13:50" },
   { name: "1:50 – 2:05",   start: "13:50", end: "14:05" },
+  { name: "2:05 – 2:35",   start: "14:05", end: "14:35" },
 ];
 
 const DEFAULT_CLASSES: Record<string, { gradeClass: string }> = {
@@ -58,17 +59,17 @@ const DEFAULT_CLASSES: Record<string, { gradeClass: string }> = {
   "0-7": { gradeClass: "4º A" },  "0-8": { gradeClass: "4º A" },
   "1-0": { gradeClass: "6º A" },  "1-1": { gradeClass: "6º A" },
   "1-2": { gradeClass: "6º B" },  "1-3": { gradeClass: "6º B" },
-  "1-8": { gradeClass: "3ER AÑO A" }, "1-9": { gradeClass: "3ER AÑO A" },
+  "1-8": { gradeClass: "3ER AÑO A" }, "1-9": { gradeClass: "3ER AÑO A" }, "1-10": { gradeClass: "3ER AÑO A" },
   "2-6": { gradeClass: "1ER AÑO B" }, "2-7": { gradeClass: "1ER AÑO B" },
-  "2-8": { gradeClass: "5TO AÑO" },   "2-9": { gradeClass: "5TO AÑO" },
+  "2-8": { gradeClass: "5TO AÑO" },   "2-9": { gradeClass: "5TO AÑO" },   "2-10": { gradeClass: "5TO AÑO" },
   "3-0": { gradeClass: "2DO AÑO B" }, "3-1": { gradeClass: "2DO AÑO B" },
   "3-2": { gradeClass: "1ER AÑO A" }, "3-3": { gradeClass: "1ER AÑO A" },
   "3-6": { gradeClass: "2DO AÑO A" }, "3-7": { gradeClass: "2DO AÑO A" },
-  "3-8": { gradeClass: "3ER AÑO B" }, "3-9": { gradeClass: "3ER AÑO B" },
+  "3-8": { gradeClass: "3ER AÑO B" }, "3-9": { gradeClass: "3ER AÑO B" }, "3-10": { gradeClass: "3ER AÑO B" },
   "4-0": { gradeClass: "4º B" },  "4-1": { gradeClass: "4º B" },
   "4-2": { gradeClass: "3º A" },  "4-3": { gradeClass: "3º A" },
   "4-5": { gradeClass: "3º B" },  "4-6": { gradeClass: "3º B" },
-  "4-8": { gradeClass: "4TO AÑO" }, "4-9": { gradeClass: "4TO AÑO" },
+  "4-8": { gradeClass: "4TO AÑO" }, "4-9": { gradeClass: "4TO AÑO" }, "4-10": { gradeClass: "4TO AÑO" },
 };
 
 const app = express();
